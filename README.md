@@ -144,10 +144,95 @@ adb shell pm uninstall me.efesser.flauncher               # （可选）卸载 F
 - FLauncher 换卡顿可换当贝桌面/Projectivy，但**当贝桌面闭源带推荐**，介意请用 FLauncher
 - 开机广告由固件启动流程加载，删 `com.mitv.tvad`（在装的前提下）多数固件可跳过
 
-## 参考项目
+---
 
-- [MiharaKinu/MiTVNoAd](https://github.com/MiharaKinu/MiTVNoAd)（国内版专用）
-- [AlPeFe/xiaomi-tv-debloat](https://github.com/AlPeFe/xiaomi-tv-debloat)（国际版，+602MB 内存实测）
-- [HridayAgg/mitv-debloat](https://github.com/HridayAgg/mitv-debloat)（只卸不删原则）
-- [cleanyourtv.site 小米机型清单](https://cleanyourtv.site/brand/xiaomi/)
-- [博客园 ADB 实战](https://www.cnblogs.com/lamtisa/p/13624544.html) / [CSDN 开机广告清除](https://blog.csdn.net/qq_35989688/article/details/126525833)
+# Part 3 · 电视完全体（代理 / YouTube / 影视仓 / 清理）
+
+> 换桌面之后的进阶玩法，全部实测于 MiTV-ASTP0 / Android 9 / armeabi-v7a。
+
+## 一、电视独立代理（Clash Meta for Android）
+
+1. 侧载 [CMFA](https://github.com/MetaCubeX/ClashMetaForAndroid/releases)（armeabi-v7a 包）
+2. 生成 mihomo 配置（节点 + `GEOIP,CN,DIRECT` 分流规则，**国内应用零影响，节点挂了关 VPN 即可**）
+3. 导入技巧：配置文件放电脑上 `python3 -m http.server 18972`，
+   然后 `adb reverse tcp:18972 tcp:18972`，电视端 CMFA 用深链导入：
+
+```bash
+adb shell am start -a android.intent.action.VIEW \
+  -d "clash://install-config?url=http%3A%2F%2F127.0.0.1%3A18972%2Fconfig.yaml"
+```
+
+> adb reverse 完美绕开"电脑防火墙拦局域网"的问题；若要真局域网分发记得
+> `ufw allow from 192.168.1.0/24 to any port 18972 proto tcp`。
+
+## 二、YouTube = SmartTube
+
+[SmartTube](https://github.com/yuliskov/SmartTube)（开源、无广告、免谷歌服务、遥控器友好）。
+官方 YouTube 装不了：强依赖 GMS + 设备认证 + Widevine，国产电视三座大山全撞。
+
+## 三、影视仓 / OK影视(FongMi)：TVBox 配置的其它玩家
+
+- 配置源推荐 jsdelivr CDN 直达（免电脑、免代理、每日自动更新）：
+  `https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.json`
+  （GitHub Actions 每日聚合 1630 站 + 571 直播 + 健康检查）
+- 影视仓：瀑布流内容墙（翻着看）；FongMi：搜索型（搜着看）；各有所长
+- ⚠️ 聚合配置**第一个站点可能是成人站**（排序随机），装好先按菜单键换默认站点
+- 饭太硬接口死因诊断样本：域名被 DNS 污染解析到 Facebook IP 段（157.240.x.x）
+
+## 四、批量清理预装 & 权限修复
+
+```bash
+# 第三方预装直接卸载
+adb shell uninstall com.cibn.tv com.newtv.cboxtv com.ktcp.video ...
+# 系统包用 --user 0（可逆）
+adb shell pm uninstall --user 0 com.mitv.shoplugin
+# 存储权限曾被"拒绝且不再询问"(USER_FIXED)的，系统层直接改判：
+adb shell pm grant com.github.tvbox.osc.tk android.permission.READ_EXTERNAL_STORAGE
+adb shell pm grant com.github.tvbox.osc.tk android.permission.WRITE_EXTERNAL_STORAGE
+```
+
+> 陷阱：`com.xiaoji.tvbox` 名字像 TVBox 分支，实际是街机模拟器（com.xiaoji.emu.mame），
+> 别按名字想当然归类。
+
+---
+
+# Part 4 · 远程操控电视的正确姿势（血泪工具箱）
+
+## 1. uiautomator dump = 坐标与文本的唯一可信来源
+
+视觉判读会错（本人实测把"未保存"看成"已保存"），XML 不会：
+
+```bash
+adb shell uiautomator dump /sdcard/ui.xml && adb pull /sdcard/ui.xml .
+# 解析出所有 text + bounds + focused，点击/校验全靠它
+```
+
+## 2. 电视输入法会把 ASCII 打成全角
+
+`input text 'http://a.b/c'` → 字段里变成 `http：／／a。b／c`（搜狗TV输入法的"功劳"，
+`fm` 甚至能变`父母`）。解法 = [ADBKeyboard](https://github.com/senzhk/ADBKeyboard)：
+
+```bash
+adb install ADBKeyboard.apk
+adb shell ime set com.android.adbkeyboard/.AdbIME
+adb shell am broadcast -a ADB_CLEAR_TEXT                      # 清空当前输入框
+adb shell am broadcast -a ADB_INPUT_TEXT --es msg 'https://...'  # 原样注入(支持中文)
+adb shell ime set com.sohu.inputmethod.sogou.tv/.SogouIME     # 用完恢复搜狗
+```
+
+## 3. 很多 TV 按钮不认 tap，只认 D-pad
+
+影视仓的"确定"点击 7 次无效，键盘导航一次过。通用套路：
+
+```bash
+adb shell input keyevent 61   # TAB 在输入框/按钮间移动焦点
+adb shell input keyevent 21/22/20/21 # 左右上下微调焦点
+adb shell input keyevent 23   # 确定键激活
+```
+
+## 4. 其它碎片经验
+
+- `pm clear` 后应用丢权限，先补授权再走配置流程
+- 弹窗布局会因输入法收起而**重排**，坐标要用完就取，别缓存
+- 截图 + 视觉模型判读：内容含敏感词会被审查接口 400（聚合源的成人站分类中招过）
+- Herdr 用户可把视觉判读派给副 pane 的轻量模型，主流程只信 XML

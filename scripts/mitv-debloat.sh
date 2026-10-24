@@ -57,6 +57,15 @@ case "${1:-}" in
     adb shell input keyevent 3
     echo "→ 按 HOME 键验证; 回滚: $0 restorehome <TV_IP>"
     ;;
+  perm)
+    # 给 TVBox 系应用补存储权限(清数据/曾被拒绝后失效的场景)
+    connect
+    for p in com.github.tvbox.osc.tk com.fongmi.android.tv com.huawei.himovceie; do
+      adb shell pm grant $p android.permission.READ_EXTERNAL_STORAGE 2>/dev/null
+      adb shell pm grant $p android.permission.WRITE_EXTERNAL_STORAGE 2>/dev/null
+      echo "✓ $p 存储权限已授予"
+    done
+    ;;
   restorehome)
     connect
     adb shell cmd package install-existing com.mitv.tvhome && echo "✓ PatchWall 已恢复"
@@ -78,5 +87,5 @@ case "${1:-}" in
     TV_IP="${3:-}"; connect
     adb shell cmd package install-existing "$2" && echo "已还原 $2"
     ;;
-  *) echo "命令: list | install | switchhome | restorehome | debloat | restore"; exit 1 ;;
+  *) echo "命令: list | install | switchhome | restorehome | perm | debloat | restore"; exit 1 ;;
 esac
