@@ -14,7 +14,36 @@
 git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/mitv-mod
 ```
 
-人类阅读完整攻略请继续往下（Part 1-4 含逆向实录）。
+
+## 安装后的使用示范（复制即用）
+
+**一键全家桶**（复刻本仓库作者的完整改造效果）：
+
+```text
+我的小米电视(MIUI TV)要全面改造，按 mitv-mod 技能流程来：
+1. 去广告：清掉广告/推送/统计组件，OTA 复活了要能重跑
+2. 换桌面：装 Projectivy Launcher，开机直达无广告，PatchWall 禁用但保留可恢复
+3. 装代理：Clash Meta(CMFA)，配置文件在 <你的配置路径/URL>，规则要国内直连、节点挂了不影响电视
+4. 装 YouTube 客户端 SmartTube
+5. 装影视仓 + OK影视(FongMi)，配置源用
+   https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.json
+   装好后把默认站点切成常规站（第一个可能是成人站）
+6. 清理预装：先给我编号清单我挑，别自作主张删
+电视 IP 是 192.168.1.4（不对就扫 5555 端口找）。
+删除/禁用系统包前列清单等我确认，全程用可逆操作并附恢复命令。
+```
+
+> 需要遥控器配合的只有三处：电视开 ADB、授权弹窗点允许、CMFA 的 VPN 授权——其余 agent 全自动。
+
+**单任务短句**（技能自动路由）：
+
+```text
+帮我把小米电视的开机广告去掉                    → debloat
+电视换个第三方桌面，要可回滚                    → launcher-swap
+电视上装个能看 YouTube 的                       → proxy-youtube
+给 TVBox 配一个能自动更新的接口                 → streaming-apps
+电视输入法打网址全是全角符号，帮我填个配置地址   → remote-toolbox
+```
 
 
 ## 成果
