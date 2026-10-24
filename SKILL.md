@@ -1,5 +1,5 @@
 ---
-name: mitv-mod
+name: tv-fresh
 version: 1.0.0
 description: "小米电视(MIUI TV)改造技能：去广告、换桌面、装代理/YouTube/影视仓、批量清理预装、远程操控电视。当用户提到小米电视/Redmi电视/电视盒子去广告、换Launcher、TVBox/影视仓配置、电视装代理或YouTube、adb 操作电视时使用。需要电视与电脑同网且开启 ADB 调试。"
 metadata:

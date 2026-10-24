@@ -13,7 +13,7 @@
 
 ```bash
 # omp 等 agent 的技能目录（其它 agent 放各自的 skills 目录即可）
-git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/mitv-mod
+git clone https://github.com/wangrongding/tv-fresh ~/.agents/skills/tv-fresh
 ```
 
 
@@ -22,7 +22,7 @@ git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/
 **一键全家桶**（复刻本仓库作者的完整改造效果）：
 
 ```text
-我的小米电视(MIUI TV)要全面改造，按 mitv-mod 技能流程来：
+我的小米电视(MIUI TV)要全面改造，按 tv-fresh 技能流程来：
 1. 去广告：清掉广告/推送/统计组件，OTA 复活了要能重跑
 2. 换桌面：装 Projectivy Launcher，开机直达无广告，PatchWall 禁用但保留可恢复
 3. 装代理：Clash Meta(CMFA)，配置文件在 <你的配置路径/URL>，规则要国内直连、节点挂了不影响电视
