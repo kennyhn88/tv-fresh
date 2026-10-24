@@ -11,11 +11,13 @@
 ## 推荐配置源（免电脑免代理，每日自动更新）
 
 ```
-https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.json
+http://肥猫.net/tv          # 实测可用(40站)
+http://www.饭太硬.net/tv     # 返回图片页,非直连配置
+http://fty.xxooo.cf/tv      # 备用,时活时死
+http://我不是.摸鱼儿.top     # 备用,时活时死
 ```
 
-（GitHub Actions 每日聚合 1630 站 + 571 直播 + 健康检查；jsdelivr 国内直连）
-验证配置有效性：JSON 含 `sites[]` 且数量 > 100。
+接口是社区维护的，时活时死。装前先验证：`curl -sL -A 'okhttp/3.15' <url>` 返回 JSON 且含 `sites[]` 才算活。
 
 ## 配置注入流程（以影视仓为例，全家族通用）
 
@@ -30,7 +32,7 @@ https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.jso
 
 | 坑 | 解法 |
 |---|---|
-| **聚合配置第一个站可能是成人站** | 装好后立刻按**遥控器菜单键**(keyevent 82)呼出"选择首页数据源"，切常规站（如"无广┃[采集]"） |
+| 部分聚合源**首个站点可能是成人站** | 装好后立刻按**遥控器菜单键**(keyevent 82)呼出"选择首页数据源"，切常规站 |
 | `pm clear` 后"确定"按不动 | 存储权限丢了：`pm grant <pkg> android.permission.READ_EXTERNAL_STORAGE` + WRITE |
 | 饭太硬等接口域名失效 | 先诊断：`getent hosts www.饭太硬.com` 若解析到 157.240.x.x（Facebook 段）= DNS 污染，换源别硬等 |
 | 想给 mytv 等直播 App 喂源 | 配置里的 `lives` 段可导出为 txt/m3u 单独用 |

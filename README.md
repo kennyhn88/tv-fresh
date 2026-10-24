@@ -4,6 +4,8 @@
 > 免 root、全程可逆（所有操作都有对应还原命令）。
 > 原理：ADB 调试 + `pm uninstall --user 0`（只对当前用户卸载，系统分区不动，
 > `cmd package install-existing <包名>` 一条命令可还原）。
+![改造后的电视桌面（Projectivy Launcher + 无广告 + CMFA/SmartTube/影视仓全家桶）](docs/desktop-home.jpg)
+
 # 作为 Agent Skill 使用（推荐）
 
 本仓库同时是一个可安装的 agent 技能（含 `SKILL.md` + 分任务 reference + 一键脚本），
@@ -25,9 +27,7 @@ git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/
 2. 换桌面：装 Projectivy Launcher，开机直达无广告，PatchWall 禁用但保留可恢复
 3. 装代理：Clash Meta(CMFA)，配置文件在 <你的配置路径/URL>，规则要国内直连、节点挂了不影响电视
 4. 装 YouTube 客户端 SmartTube
-5. 装影视仓 + OK影视(FongMi)，配置源用
-   https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.json
-   装好后把默认站点切成常规站（第一个可能是成人站）
+5. 装影视仓 + OK影视(FongMi)，配置源用 http://肥猫.net/tv
 6. 清理预装：先给我编号清单我挑，别自作主张删
 电视 IP 是 192.168.1.4（不对就扫 5555 端口找）。
 删除/禁用系统包前列清单等我确认，全程用可逆操作并附恢复命令。
@@ -54,8 +54,6 @@ git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/
 | 开机桌面 | PatchWall（瀑布流+广告）→ **FLauncher**（开源极简） |
 | HOME 键 | 始终回到 FLauncher |
 | 系统设置 | 不受影响（`com.xiaomi.mitv.settings`） |
-
-![改造后的电视桌面（Projectivy Launcher + 无广告 + CMFA/SmartTube/影视仓全家桶）](docs/desktop-home.jpg)
 
 ---
 
@@ -215,11 +213,14 @@ adb shell am start -a android.intent.action.VIEW \
 
 ## 三、影视仓 / OK影视(FongMi)：TVBox 配置的其它玩家
 
-- 配置源推荐 jsdelivr CDN 直达（免电脑、免代理、每日自动更新）：
-  `https://fastly.jsdelivr.net/gh/hebijunge/tvbox-config@main/tvbox_recommended.json`
-  （GitHub Actions 每日聚合 1630 站 + 571 直播 + 健康检查）
+- 常用接口源（社区维护，时活时死，装前先 `curl -A 'okhttp/3.15' <url>` 验证返回 JSON 且含 sites）：
+
+  | 接口 | 实测(2026-10) |
+  |---|---|
+  | `http://肥猫.net/tv` | ✅ 可用(40站) |
+  | `http://www.饭太硬.net/tv` | ⚠️ 返回图片页,非直连配置 |
+  | `http://fty.xxooo.cf/tv` / `http://我不是.摸鱼儿.top` | ❌ 失效中 |
 - 影视仓：瀑布流内容墙（翻着看）；FongMi：搜索型（搜着看）；各有所长
-- ⚠️ 聚合配置**第一个站点可能是成人站**（排序随机），装好先按菜单键换默认站点
 - 饭太硬接口死因诊断样本：域名被 DNS 污染解析到 Facebook IP 段（157.240.x.x）
 
 ## 四、批量清理预装 & 权限修复
