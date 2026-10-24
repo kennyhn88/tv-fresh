@@ -4,6 +4,18 @@
 > 免 root、全程可逆（所有操作都有对应还原命令）。
 > 原理：ADB 调试 + `pm uninstall --user 0`（只对当前用户卸载，系统分区不动，
 > `cmd package install-existing <包名>` 一条命令可还原）。
+# 作为 Agent Skill 使用（推荐）
+
+本仓库同时是一个可安装的 agent 技能（含 `SKILL.md` + 分任务 reference + 一键脚本），
+你的 AI 助手装上后即可按流程安全地改造小米电视：
+
+```bash
+# omp 等 agent 的技能目录（其它 agent 放各自的 skills 目录即可）
+git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/mitv-mod
+```
+
+人类阅读完整攻略请继续往下（Part 1-4 含逆向实录）。
+
 
 ## 成果
 
