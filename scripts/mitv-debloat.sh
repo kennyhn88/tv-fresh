@@ -42,10 +42,14 @@ case "${1:-}" in
     echo "FLauncher 已安装"
     ;;
   switchhome)
+    # 用法: switchhome <TV_IP> <包名/Activity>
+    # 例: switchhome 192.168.1.4 com.spocky.projengmenu/.ui.home.MainActivity
+    #     switchhome 192.168.1.4 me.efesser.flauncher/me.efesser.flauncher.MainActivity
+    COMP="${3:-}"
+    [ -z "$COMP" ] && { echo "用法: $0 switchhome <TV_IP> <包名/Activity>"; exit 1; }
     connect
-    # 最终解法: 三步让 FLauncher 成为唯一桌面(详见 README Part 2)
-    adb shell cmd package set-home-activity me.efesser.flauncher/me.efesser.flauncher.MainActivity \
-      && echo "✓ 首选桌面已注册"
+    adb shell cmd package set-home-activity "$COMP" \
+      && echo "✓ 首选桌面已注册: $COMP"
     adb shell pm uninstall --user 0 com.mitv.tvhome >/dev/null 2>&1 \
       && echo "✓ PatchWall 已禁用"
     adb shell pm disable-user --user 0 com.android.tv.settings >/dev/null 2>&1 \
