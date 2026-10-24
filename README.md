@@ -26,6 +26,8 @@ git clone https://github.com/wangrongding/mitv-flauncher-guide ~/.agents/skills/
 | HOME 键 | 始终回到 FLauncher |
 | 系统设置 | 不受影响（`com.xiaomi.mitv.settings`） |
 
+![改造后的电视桌面（Projectivy Launcher + 无广告 + CMFA/SmartTube/影视仓全家桶）](docs/desktop-home.jpg)
+
 ---
 
 # Part 1 · 去广告（基础篇）
